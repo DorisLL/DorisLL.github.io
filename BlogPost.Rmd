@@ -1,0 +1,86 @@
+---
+title: "Visualizations of Dataset"
+subtitle: "Different visualizations"
+output: html_document
+author: Doris Liu
+date: 2018-12-07
+---
+
+```{r setup, include=FALSE}
+source("helper.R")
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(dplyr)
+library(knitr)
+```
+
+
+## About my Dataset
+This is a table from Rstudio, which is called **Titanic**. It is converted into data frame in this blog post. This dataset will be the sample that we are using to display different visualizations avaliable in R.
+
+Below are some basic information about the data set: 
+
+* **column names:** `r col_names`
+* **head:** 
+```{r, echo= FALSE}
+head(my_dataframe)
+```
+* **number of rows:** `r num_col`
+
+
+## Table
+
+The most direct way to display data is to display the dataset as a table. 
+
+* Package: *knitr*
+
+we are able to display dataset as a table format, like this: 
+
+```{r my_dataframe}
+kable(my_data_head, caption = "Survival Rate for Titanic")
+```
+
+* Add caption for table by using: *caption = "caption_for_table"*.
+
+
+
+## Line Chart
+
+Line chart is a good way to see the trend of a series of data.
+
+* Package: *ggplot2*
+
+Plot a line chart, like this:
+
+```{r}
+class_survive <- my_dataframe %>% 
+  group_by(Survived, Class) %>% 
+  summarise("sum" = sum(Freq))
+  
+ggplot(class_survive, aes(Class, sum, group= class_survive$Survived)) +
+  ggtitle("Survive Rate by class") +
+  xlab("Survived") + ylab("Frequency") +
+  geom_line(aes(col = Survived)) 
+```
+* Add color for lines by using: *aes(col = name_of_variable)*
+
+## Bar Chart
+
+Bar chart is great for showing frequencies of data and compare the numbers.
+
+* Package: *ggplot2*
+
+Plot a bar chart, like this: 
+
+```{r ny_dataframe}
+group_data <- my_dataframe %>% 
+  group_by(Survived) %>% 
+  summarise("sum" = sum(Freq))
+  
+ggplot(group_data) +
+      geom_bar(mapping = aes(x = Survived, y = sum, fill = Survived), stat = "identity") +
+      labs(title = "Rate of Survival")
+```
+
+* Add a title for chart by using: *title = "title_for_chart"*
+* Fill colors for the bars by using: *are(fill = variable_name)*
